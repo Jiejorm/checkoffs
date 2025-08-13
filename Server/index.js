@@ -1,14 +1,13 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const oracledb = require('oracledb');
+const port = 5000;
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+require("dotenv").config();
 app.use(bodyParser.json());
 app.use(cors());
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+
 
 
  app.post("/api/salary-upload", async (req, res) => {
@@ -646,4 +645,8 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
+  console.log(`${process.env.ORACLE_USER}`);
+  console.log(`${process.env.ORACLE_PASSWORD}`);
+  console.log(`${process.env.ORACLE_CONNECT_STRING}`);
+  
 }); 
