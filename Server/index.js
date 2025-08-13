@@ -643,6 +643,49 @@ app.use(cors());
   }
 });
 
+
+
+app.get("/api/get-unique-ref", (req, res) => {
+  let getBatchNumberAPI = async () => {
+    try {
+      const db = await oracledb.getConnection({
+        user: DB_USER,
+        password: DB_PASSWORD,
+        connectString: DB_CONNECTION_STRING,
+        timeout: DB_CONNECTION_TIMEOUT,
+      });
+
+      const response = [];
+      let arr0 = "";
+
+      // node native promisify
+      const execute = util.promisify(db.execute).bind(db);
+
+      const data = await execute(`SELECT Get_batchno as unique_ref FROM dual`);
+
+      if (data) {
+        const column = data.metaData[0].name;
+        const row = data.rows[0];
+        // for (let i = 0; i < data.rows.length; i++) {
+        //   response.push({
+        //     unique_ref: data.rows[i][0],
+        //   });
+        // }
+
+        res.send({
+          [column]: row
+        });
+      } else {
+        res.send("Something went wrong... Nothing was returned!!");
+      }
+    } finally {
+      // conn.end();
+    }
+  };
+
+  getBatchNumberAPI();
+});
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   console.log(`${process.env.ORACLE_USER}`);
